@@ -1,0 +1,214 @@
+/**
+ * @description: React - a javascript library for building interfaces
+ * @use - use for developing SPAs
+ *  -virtual DOM - has
+ *  -functional programming - uses
+ *  -immutable data - aims to follow the principlas of 
+ *      -make copies of object and replace them instead of modifying the original
+ *  - React Applications are collections of components
+ *  - Components - small User Interface Elements that display data as it changes over time
+ * */
+
+
+/**
+ * @description: Virtual DOM 
+ *  - modifying js objects is faster than modifying DOM objects
+ *  - React maintains a virtual DOM and modifies real DOM only when it needs to
+ *  - Never reads from the real DOM
+ */
+
+/**
+ * @description: JSX - Javascript as XML
+ *  -use tags to replace React.createElement'
+ *  -in JSX we use className instead of class, because class is a reserverd word
+ *  - JSX expressions are in {}e.g. {this.doStuff()}
+ */
+
+
+/**
+ * @description: Babel - takes JSX and turns it into createElement calls
+ * - A transpiler
+ * - Works for JSX and ES6 and beyond 
+ * - Babel needs to be included with NPM. 
+ * - Need to mark tags to be transpiled with "text/babel"
+ */
+<script type="text/babel">
+    ReactDOM.render(<ul>
+        <li>item 1</li>
+        <li>item 2</li>
+        <li>item 3</li>
+    </ul>,
+                document.getElementById('react-container'))
+        </script>
+
+
+/**
+ * @description: Components - The User Interface elements that display data as it changes over time
+ *  - Componets should be capitalized. 
+ *  - takes in an obj
+ *  - has a render function
+ *  - optionally can have other methods
+ *  - can use React.createClass or ES6 class
+ *  - Stateless component Creation via const Comp = () => {return...}
+ */
+var MyComponent = React.createClass({
+    render() {
+
+    }
+})
+
+//vs 
+createClass MyComponent extends React.Component {
+    render() {
+        return <div>
+            <h1>Hello World</h1>
+            <p>Component Numero Uno</p>
+        </div>
+    }
+}
+//vs Stateless Component - simple function which returns a react element
+const MyComponent = () => {
+                return <div>
+                        <h1>Hello World</h1>
+                        <p>This is my first React component!</p>
+                    </div>
+            }
+
+
+/**
+ * @description: properties
+ *  -similar to adding attributes in HTML
+ */
+ var MyComponent = React.createClass({
+                render() {
+                    return <div>
+                        <h1>{this.props.text}</h1>/*--HERE--*/
+                    </div>
+                }
+            })
+
+            ReactDOM.render(<MyComponent text="Hello World"/>,
+                document.getElementById('react-container'))
+
+    /**
+     * @description: {this.props.children}
+     *  - The content that is withing an instance of a Component.
+     *  - We can reference it in your React Class with {this.props.children}
+     */
+    //{this.props.children} would be "This is 1" in the below 
+    <MyComponent text="Hello World">
+                    THis is 1
+                    </MyComponent>
+
+    //To show that content our component would have to do something like:
+    var MyComponent = React.createClass({
+                render() {
+                    return <div>
+                        <h1>{this.props.text}</h1>
+                        <p>{this.props.children}</p>/*--Here--*/
+                    </div>
+                }
+            })
+
+
+    /**
+     * @description: PropTypes - optional - tells what type of variable a prop should be.
+     * -@type propType is an object. 
+     *  -it contains pairs of propNames and functions for how to check the propTypes
+     *  -each function gets the array of props and propName as params. 
+     *  -good to use for erroring or handling bad input
+     */
+    var Board = React.createClass({
+            propTypes: {
+                count: function(props,propName){
+                    if(typeof props[propName] !== "number"){
+                        return new Error("the count must be a number")
+                    }
+
+                    if(props[propName] > 100) {
+                        return new Error("Creating " + props[propName] + " notes is silly")
+                    }
+                }
+            },
+            render() {
+                return (
+                    <div className="board">
+                        {this.props.count}
+                    </div>);
+            }
+        });
+        
+        ReactDOM.render(<Board count={5000}/>, 
+            document.getElementById('react-container'))
+
+/**
+ * @description: Handling Events 
+ *  -in our JSX we can handle events like onClick
+ *  -syntax is eventName={function}
+ */
+
+    //here we are in a component called stuff, that has a method called doStuff() and we want to use it in our render
+    render(){
+        <div>
+            <button onClick={this.doStuff}>DO STUFF!</button>
+        </div>
+    }
+
+    //here we're handling the change of state onChange={this.handleCheck}
+    handleCheck() {
+        this.setState({ checked: !this.state.checked })
+    },
+    render() {
+        var msg;
+        if (this.state.checked) {
+            msg = "checked";
+        } else {
+            msg = "unChecked";
+        }
+        return (
+            <div>
+                <input type="checkbox"
+                    onChange={this.handleCheck} 
+                    defaultChecked={this.state.checked}/>
+                <p>This box is {msg}</p>
+            </div>
+        )
+    }
+
+/**
+ * @description: State
+ */
+    /**
+     * @description: getInitialState() -when our component renders it will be the initial state of the application(component)
+     *  - You define once per component
+     * @return {object} - the state of the object
+     */
+    getInitialState() {
+        return {checked: false}
+    }
+    /**
+     * @description: setState({state: newValue})
+     * @param {Object} - contains the state and the newValue to set that state to. 
+     * @example: the below modifies the initialState defined above
+     */
+    handleCheck() {
+        this.setState({checked: !this.state.checked})
+    }
+/**
+ * @description:reference or refs
+ *  -It's how you access the values of UI elements
+ *  -Declare ref as ref="{string}name"
+ *  -use with this.refs.name.value
+*/
+save() {
+    var val = this.refs.newText.value;/**using ref */
+    this.setState({editing: false});
+},
+renderForm() {
+    return (
+        <div className="note">
+            <textarea ref="newText"></textarea>/**HERE */
+            <button onClick={this.save}>SAVE</button>
+        </div>
+    )
+}
